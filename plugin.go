@@ -8,6 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/elasticbeanstalk"
+	"strings"
 )
 
 // Plugin defines the beanstalk plugin parameters.
@@ -35,6 +36,7 @@ type Plugin struct {
 	AutoCreate        bool
 	Process           bool
 	EnvironmentUpdate bool
+	Tag               string
 }
 
 // Exec runs the plugin
@@ -96,7 +98,7 @@ func (p *Plugin) Exec() error {
 				VersionLabel:    aws.String(p.VersionLabel),
 				ApplicationName: aws.String(p.Application),
 				Description:     aws.String(p.Description),
-				EnvironmentName: aws.String(p.EnvironmentName),
+				EnvironmentName: aws.String(getEnvironmentName(p.EnvironmentName, p.Tag)),
 			},
 		)
 		if err != nil {
@@ -108,4 +110,13 @@ func (p *Plugin) Exec() error {
 	}
 	return nil
 
+}
+
+func getEnvironmentName(environment, tag string) string {
+	segments := strings.Split(tag, "-")
+	suffix := "-stable"
+	if len(segments) > 1 {
+		suffix = "-beta"
+	}
+	return environment + suffix
 }

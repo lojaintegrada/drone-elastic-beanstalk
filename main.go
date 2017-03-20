@@ -83,6 +83,11 @@ func main() {
 			Usage:  "Ensure the yaml was signed",
 			EnvVar: "DRONE_YAML_VERIFIED",
 		},
+		cli.StringFlag{
+			Name:   "tag",
+			Usage:  "commit tag",
+			EnvVar: "PLUGIN_TAG",
+		},
 	}
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
@@ -103,6 +108,7 @@ func run(c *cli.Context) error {
 		EnvironmentUpdate: c.Bool("environment-update"),
 		Region:            c.String("region"),
 		YamlVerified:      c.BoolT("yaml-verified"),
+		Tag:               c.String("tag"),
 	}
 
 	return plugin.Exec()
