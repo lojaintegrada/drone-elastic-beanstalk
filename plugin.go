@@ -36,7 +36,6 @@ type Plugin struct {
 	AutoCreate        bool
 	Process           bool
 	EnvironmentUpdate bool
-	Tag               string
 }
 
 // Exec runs the plugin
@@ -98,7 +97,7 @@ func (p *Plugin) Exec() error {
 				VersionLabel:    aws.String(p.VersionLabel),
 				ApplicationName: aws.String(p.Application),
 				Description:     aws.String(p.Description),
-				EnvironmentName: aws.String(getEnvironmentName(p.EnvironmentName, p.Tag)),
+				EnvironmentName: aws.String(getEnvironmentName(p.EnvironmentName, p.VersionLabel)),
 			},
 		)
 		if err != nil {
